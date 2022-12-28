@@ -41,8 +41,13 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.close),
-              onPressed: () {
-                //Implement logout functionality
+              onPressed: () async {
+                try {
+                  await _auth.signOut();
+                  Navigator.pop(context);
+                } catch (e) {
+                  print("failed to sign out: $e");
+                }
               }),
         ],
         title: Text('⚡️Chat'),
