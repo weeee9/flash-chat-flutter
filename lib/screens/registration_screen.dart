@@ -1,6 +1,8 @@
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/components/rounded_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static String id = "/registration";
@@ -10,6 +12,11 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _auth = FirebaseAuth.instance;
+
+  late String email;
+  late String password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +42,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               keyboardType: TextInputType.emailAddress,
               textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                email = value;
               },
               style: TextStyle(
                 color: Colors.grey[700],
@@ -51,7 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               textAlign: TextAlign.center,
               obscureText: true,
               onChanged: (value) {
-                //Do something with the user input.
+                password = value;
               },
               style: TextStyle(
                 color: Colors.grey[700],
@@ -65,9 +72,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             RoundedButton(
               text: "Register",
               color: Colors.blueAccent,
-              onPressed: () {
-                print(email);
-                print(password);
+              onPressed: () async {
+                try {
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                    email: email,
+                    password: password,
+                  );
+
+                  if (newUser.user != null) {
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  }
+                } catch (e) {
+                  print(e);
+                }
               },
             ),
           ],
