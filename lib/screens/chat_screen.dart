@@ -16,6 +16,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
   late User loggedInUser;
 
+  final messageTextController = TextEditingController();
   late String message;
 
   void getCurrentUser() {
@@ -71,6 +72,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: messageTextController,
                       onChanged: (value) {
                         message = value;
                       },
@@ -79,6 +81,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   TextButton(
                     onPressed: () {
+                      messageTextController.clear();
+
                       _firestore.collection("messages").add({
                         "text": message,
                         "sender": loggedInUser.email,
