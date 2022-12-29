@@ -77,17 +77,19 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 final messages = snapshot.data!.docs;
 
-                List<Text> messageWidgets = [];
+                List<MessageBubble> messageBubbles = [];
                 for (var msg in messages) {
                   final text = msg.get("text");
                   final sender = msg.get("sender");
 
-                  messageWidgets.add(
-                    Text("$text from $sender"),
+                  messageBubbles.add(
+                    MessageBubble(text: text, sender: sender),
                   );
                 }
-                return Column(
-                  children: messageWidgets,
+                return Expanded(
+                  child: ListView(
+                    children: messageBubbles,
+                  ),
                 );
               }),
             ),
@@ -121,6 +123,47 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  late final text;
+  late final sender;
+
+  MessageBubble({required this.text, required this.sender});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            sender,
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Colors.black54,
+            ),
+          ),
+          Material(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.lightBlueAccent,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
