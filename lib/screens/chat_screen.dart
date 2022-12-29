@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -46,12 +48,12 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () async {
-                try {
-                  await _auth.signOut();
-                  Navigator.pop(context);
-                } catch (e) {
-                  print("failed to sign out: $e");
-                }
+                // try {
+                //   await _auth.signOut();
+                //   Navigator.pop(context);
+                // } catch (e) {
+                //   print("failed to sign out: $e");
+                // }
               }),
         ],
         title: Text('⚡️Chat'),
@@ -62,6 +64,33 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection("messages").snapshots(),
+              builder: ((context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlueAccent,
+                    ),
+                  );
+                }
+
+                final messages = snapshot.data!.docs;
+
+                List<Text> messageWidgets = [];
+                for (var msg in messages) {
+                  final text = msg.get("text");
+                  final sender = msg.get("sender");
+
+                  messageWidgets.add(
+                    Text("$text from $sender"),
+                  );
+                }
+                return Column(
+                  children: messageWidgets,
+                );
+              }),
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
