@@ -48,12 +48,12 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () async {
-                // try {
-                //   await _auth.signOut();
-                //   Navigator.pop(context);
-                // } catch (e) {
-                //   print("failed to sign out: $e");
-                // }
+                try {
+                  await _auth.signOut();
+                  Navigator.pop(context);
+                } catch (e) {
+                  print("failed to sign out: $e");
+                }
               }),
         ],
         title: Text('⚡️Chat'),
